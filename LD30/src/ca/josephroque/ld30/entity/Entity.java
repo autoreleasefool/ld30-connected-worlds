@@ -8,11 +8,13 @@ public abstract class Entity
 {
 	static Game gameInstance = null;
 
-	float x, y;
+	int x, y;
 	float dx, dy;
 	int width, height;
+	boolean dead = false;
+	boolean overOrUnder; //Over = true, Under = false
 	
-	public Entity(Game game, float x, float y, int width, int height)
+	public Entity(Game game, int x, int y, int width, int height, boolean overOrUnder)
 	{
 		if (gameInstance == null) {
 			gameInstance = game;
@@ -22,6 +24,7 @@ public abstract class Entity
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.overOrUnder = overOrUnder;
 	}
 	
 	public abstract void update();
@@ -31,4 +34,11 @@ public abstract class Entity
 	{
 		return (this.x < other.x + other.width && this.x + this.width > other.x && this.y < other.y + other.height && this.y + this.height > other.y);
 	}
+	
+	public void die()
+	{
+		dead = true;
+	}
+	
+	public boolean isDead() {return dead;}
 }

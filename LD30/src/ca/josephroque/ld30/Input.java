@@ -78,6 +78,7 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, F
 		case KeyEvent.VK_SPACE: space = pressed; break;
 		case KeyEvent.VK_ESCAPE: escape = pressed; break;
 		case KeyEvent.VK_ENTER: enter = pressed; break;
+		default: break;
 		}
 	}
 	
