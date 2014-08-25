@@ -103,6 +103,33 @@ public class Level
 		default: return true;
 		}
 	}
+	
+	public boolean isPlayerHittingEntity(Player player)
+	{
+		for (int i = 0; i<entities.size(); i++)
+		{
+			if (entities.get(i).isSolid() && player.intersects(entities.get(i)))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isPlayerOnTopOfEntity(Player player)
+	{
+		for (int i = 0; i<entities.size(); i++)
+		{
+			if (entities.get(i).isSolid() && player.getX() < entities.get(i).getX() + entities.get(i).getWidth()
+				&& player.getX() + player.getWidth() > entities.get(i).getX()
+				&& ((player.isOver() && player.getY() + player.getHeight() == entities.get(i).getY())
+					|| (!player.isOver() && player.getY() == entities.get(i).getY() + entities.get(i).getHeight())))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public Level(Game game, int id)
 	{

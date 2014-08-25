@@ -8,21 +8,48 @@ import ca.josephroque.ld30.Constants;
 public class Crate extends Entity
 {
 	private int pushTimer = 0;
+	private boolean stopped = false;
 	
 	public void update()
 	{
 		Entity player = Entity.gameInstance.getPlayer(overOrUnder);
-		if ((player.x == x + width + 1 && player.dx < 0) || (player.x + player.width == x - 1 && player.dx > 0))
+		if (player.x == x + width || player.x + player.width == x)
 		{
-			if (++pushTimer > 10)
+			if (++pushTimer > 20)
 			{
-				this.dx = player.dx;
+				this.dx = player.direction == 0 ? 1:-1;
 			}
 		}
-		else if (dx != 0)
+		else
 		{
-			dx += (dx < 0) ? 1:-1;
+			dx += (dx < 0) ? 1:(dx > 0) ? -1:0;
 			pushTimer = 0;
+		}
+		
+		x += dx;
+		
+		if (x < 0)
+		{
+			x = 0;
+		}
+		else if (x + width >= gameInstance.getLevel().getWidth())
+		{
+			x = gameInstance.getLevel().getWidth() - width - 1;
+		}
+		
+		stopped = false;
+		while ((dx < 0 && (gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, y / Constants.TILE_SIZE)
+				|| gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y+height-1) / Constants.TILE_SIZE)))
+				|| (dx > 0 && (gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, y / Constants.TILE_SIZE)
+						|| gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y+height-1) / Constants.TILE_SIZE))))
+		{
+			x += (dx < 0) ? 1:-1;
+			stopped = true;
+		}
+		
+		if (stopped)
+		{
+			dx = 0;
 		}
 		
 		if ((overOrUnder && !gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y + height) / Constants.TILE_SIZE + 1)
@@ -43,7 +70,7 @@ public class Crate extends Entity
 			dx = (dy != 0) ? -dx:0;
 		}
 		
-		x += dx;
+		
 		y += (overOrUnder) ? dy:-dy;
 	}
 	
@@ -54,6 +81,6 @@ public class Crate extends Entity
 
 	public Crate(int x, int y, boolean overOrUnder)
 	{
-		super(x, y, 32, 32, overOrUnder);
+		super(x, y, 32, 32, overOrUnder, true);
 	}
 }

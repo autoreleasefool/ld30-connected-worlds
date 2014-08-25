@@ -55,7 +55,7 @@ public class Guard extends Entity
 
 	public Guard(int x, int y, int leftLimit, int rightLimit, boolean overOrUnder)
 	{
-		super(x, y, 17, 17, overOrUnder);
+		super(x, y, 17, 17, overOrUnder, false);
 		this.leftLimit = leftLimit;
 		this.rightLimit = rightLimit;
 		dx = SPEED * (Math.random() < 0.5 ? 1:-1);

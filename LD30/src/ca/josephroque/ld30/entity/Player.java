@@ -46,18 +46,18 @@ public class Player extends Entity
 		while ((dx <= 0 && (gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, y / Constants.TILE_SIZE)
 				|| gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y + height) / Constants.TILE_SIZE)))
 				|| (dx >= 0 && (gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, y / Constants.TILE_SIZE)
-						|| gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y+height) / Constants.TILE_SIZE))))
+						|| gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y+height) / Constants.TILE_SIZE)))
+						|| gameInstance.getLevel().isPlayerHittingEntity(this))
 		{
 			x += (direction != 0) ? 1:-1;
-			dx = 0;
-			gameInstance.getPlayer(!overOrUnder).setHorizontalSpeed(0);
 			gameInstance.getPlayer(!overOrUnder).setPosition(x, gameInstance.getPlayer(!overOrUnder).getY());
 		}
 		
 		if (dy < 0 || ((overOrUnder && !gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y + height + 1) / Constants.TILE_SIZE)
 				&& !gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y + height + 1) / Constants.TILE_SIZE))
 				|| (!overOrUnder && !gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y - 1) / Constants.TILE_SIZE)
-				&& !gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y - 1) / Constants.TILE_SIZE))))
+				&& !gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y - 1) / Constants.TILE_SIZE)))
+				&& !gameInstance.getLevel().isPlayerOnTopOfEntity(this))
 		{
 			falling = true;
 			dy += (dy < Constants.TERMINAL_VELOCITY) ? Constants.GRAVITY:0;
@@ -66,7 +66,8 @@ public class Player extends Entity
 			while ((overOrUnder && (gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y + height) / Constants.TILE_SIZE)
 					|| gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y + height) / Constants.TILE_SIZE)))
 					|| (!overOrUnder && (gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y) / Constants.TILE_SIZE)
-					|| gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y) / Constants.TILE_SIZE))))
+					|| gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y) / Constants.TILE_SIZE)))
+					|| gameInstance.getLevel().isPlayerHittingEntity(this))
 			{
 				y += (overOrUnder) ? -1:1;
 				dy = 0;
@@ -130,7 +131,7 @@ public class Player extends Entity
 
 	public Player(int x, int y, boolean overOrUnder)
 	{
-		super(x, y, 21, 73, overOrUnder);
+		super(x, y, 21, 73, overOrUnder, false);
 	}
 	
 	public static int getXOffset() {return xOffset;}

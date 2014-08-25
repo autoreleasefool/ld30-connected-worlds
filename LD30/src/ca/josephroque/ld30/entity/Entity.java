@@ -13,17 +13,19 @@ public abstract class Entity
 	int width, height;
 	boolean dead = false;
 	boolean overOrUnder; //Over = true, Under = false
+	boolean solid;
 	
 	int frame = 0;
 	int direction = 0;	//Facing right = 0, Facing left = 1
 	
-	public Entity(int x, int y, int width, int height, boolean overOrUnder)
+	public Entity(int x, int y, int width, int height, boolean overOrUnder, boolean solid)
 	{
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
 		this.overOrUnder = overOrUnder;
+		this.solid = solid;
 	}
 	
 	public abstract void update();
@@ -44,6 +46,10 @@ public abstract class Entity
 	public void resetSpeed() {this.dx = 0; this.dy = 0;}
 	public int getX() {return x;}
 	public int getY() {return y;}
+	public int getDX() {return dx;}
+	public int getDY() {return dy;}
 	public int getWidth() {return width;}
 	public int getHeight() {return height;}
+	public boolean isSolid() {return solid;}
+	public boolean isOver() {return overOrUnder;}
 }
