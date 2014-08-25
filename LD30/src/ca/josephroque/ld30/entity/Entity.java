@@ -39,6 +39,8 @@ public abstract class Entity
 	public static void setGame(Game game) {gameInstance = game;}
 	
 	public void setPosition(int x, int y) {this.x = x; this.y = y;}
+	public void setHorizontalSpeed(int dx) {this.dx = dx;}
+	public void setVerticalSpeed(int dy) {this.dy = dy;}
 	public void resetSpeed() {this.dx = 0; this.dy = 0;}
 	public int getX() {return x;}
 	public int getY() {return y;}

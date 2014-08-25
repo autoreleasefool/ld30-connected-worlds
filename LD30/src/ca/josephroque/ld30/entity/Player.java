@@ -13,6 +13,7 @@ public class Player extends Entity
 	private static final int yOffset = 20;
 	private static int renderX;
 	private static final int SPEED = 4;
+	private boolean falling = false;
 	
 	public void update(Input input)
 	{
@@ -30,45 +31,67 @@ public class Player extends Entity
 		{
 			dx += (dx < 0) ? 1:(dx > 0 ? -1:0);
 		}
+
+		x += dx;
 		
-		if ((overOrUnder && !gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y + height) / Constants.TILE_SIZE + 1)
-				&& !gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y + height) / Constants.TILE_SIZE + 1))
-				|| (!overOrUnder && !gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, y / Constants.TILE_SIZE - 1)
-				&& !gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, y / Constants.TILE_SIZE - 1)))
+		if (x < 0)
 		{
+			x = 0;
+		}
+		else if (x + width >= gameInstance.getLevel().getWidth())
+		{
+			x = gameInstance.getLevel().getWidth() - width - 1;
+		}
+		
+		while ((dx <= 0 && (gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, y / Constants.TILE_SIZE)
+				|| gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y + height) / Constants.TILE_SIZE)))
+				|| (dx >= 0 && (gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, y / Constants.TILE_SIZE)
+						|| gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y+height) / Constants.TILE_SIZE))))
+		{
+			x += (direction != 0) ? 1:-1;
+			dx = 0;
+			gameInstance.getPlayer(!overOrUnder).setHorizontalSpeed(0);
+			gameInstance.getPlayer(!overOrUnder).setPosition(x, gameInstance.getPlayer(!overOrUnder).getY());
+		}
+		
+		if (dy < 0 || ((overOrUnder && !gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y + height + 1) / Constants.TILE_SIZE)
+				&& !gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y + height + 1) / Constants.TILE_SIZE))
+				|| (!overOrUnder && !gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y - 1) / Constants.TILE_SIZE)
+				&& !gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y - 1) / Constants.TILE_SIZE))))
+		{
+			falling = true;
 			dy += (dy < Constants.TERMINAL_VELOCITY) ? Constants.GRAVITY:0;
+			y += (overOrUnder) ? dy:-dy;
+			
+			while ((overOrUnder && (gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y + height) / Constants.TILE_SIZE)
+					|| gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y + height) / Constants.TILE_SIZE)))
+					|| (!overOrUnder && (gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y) / Constants.TILE_SIZE)
+					|| gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y) / Constants.TILE_SIZE))))
+			{
+				y += (overOrUnder) ? -1:1;
+				dy = 0;
+				falling = false;
+			}
 		}
 		else
 		{
-			while (dy > 0 && ((overOrUnder && !(gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y + height + 1) / Constants.TILE_SIZE)
-					|| gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y + height + 1) / Constants.TILE_SIZE)))
-					|| (!overOrUnder && !(gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y - 1) / Constants.TILE_SIZE)
-					|| gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y - 1) / Constants.TILE_SIZE)))))
-			{
-				y += (overOrUnder) ? 1:-1;
-			}
+			falling = false;
 			dy = 0;
+			if (input.space && !falling)
+			{
+				dy = -10;
+			}
 		}
-		
-		if (dy == 0 && input.space)
-		{
-			dy = -8;
-		}
-		
-		if ((dx < 0 && (gameInstance.getLevel().isBlockSolid(x / 32 - 1, y / 32) || gameInstance.getLevel().isBlockSolid(x / 32 - 1, (y + height) / 32)))
-				|| (dx > 0 && (gameInstance.getLevel().isBlockSolid(x / 32 + 1, y / 32) || gameInstance.getLevel().isBlockSolid(x / 32 + 1, (y + height) / 32))))
-		{
-			dx = (dy != 0) ? -dx:0;
-		}
-		
-		x += dx;
-		y += (overOrUnder) ? dy:-dy;
 		
 		direction = (dx < 0) ? 1:(dx > 0 ? 0:direction);
 	}
 	
 	public void update()
 	{
+		if (++frame > 25)
+		{
+			frame = 0;
+		}
 	}
 	
 	public void render(Graphics2D g2d, float interpolation)
@@ -91,7 +114,18 @@ public class Player extends Entity
 				xOffset = x - (Constants.SCREEN_WIDTH / 2 - width / 2);
 			}
 		}
-		g2d.drawImage(Assets.terrain.getSubimage(0 + (frame * width) + (direction * width * 7), 183 + ((overOrUnder) ? 0:256), width, height), renderX, y - yOffset, null);
+		if (falling)
+		{
+			g2d.drawImage(Assets.terrain.getSubimage((6  * width) + (direction * width * 7), 183 + ((overOrUnder) ? 0:256), width, height), renderX, y - yOffset, null);
+		}
+		else if (gameInstance.getPlayer(true).dx != 0)
+		{
+			g2d.drawImage(Assets.terrain.getSubimage((frame / 5 * width) + (direction * width * 7), 183 + ((overOrUnder) ? 0:256), width, height), renderX, y - yOffset, null);
+		}
+		else
+		{
+			g2d.drawImage(Assets.terrain.getSubimage((direction * width * 7), 183 + ((overOrUnder) ? 0:256), width, height), renderX, y - yOffset, null);
+		}
 	}
 
 	public Player(int x, int y, boolean overOrUnder)
