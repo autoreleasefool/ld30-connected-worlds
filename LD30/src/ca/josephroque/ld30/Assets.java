@@ -26,7 +26,7 @@ public class Assets
 		Image image = null;
 		try
 		{
-			image = ImageIO.read(Assets.class.getResource("ca/josephroque/ld30/_resources/images/" + fileName));
+			image = ImageIO.read(Assets.class.getResource("/ca/josephroque/ld30/_resources/images/" + fileName));
 		}
 		catch (IOException io)
 		{
@@ -50,7 +50,7 @@ public class Assets
 		
 		try
 		{
-			BufferedReader reader = new BufferedReader(new InputStreamReader(Assets.class.getResourceAsStream("ca/josephroque/ld30/_resources/text/level" + id + "_terrain.txt")));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Assets.class.getResourceAsStream("/ca/josephroque/ld30/_resources/text/level" + id + "_terrain.txt")));
 			String line = reader.readLine();
 			String layout = "";
 			while (line != null)
@@ -60,13 +60,13 @@ public class Assets
 			}
 			
 			String[] splitInput = layout.split("\n");
-			String[] layoutUnparsed;
-			levelLayout = new int[splitInput[0].length()][splitInput.length];
-			for (int y = 0; y < splitInput.length; y++) {
+			String[] layoutUnparsed = splitInput[0].split(", *");;
+			levelLayout = new int[layoutUnparsed.length][splitInput.length];
+			for (int y = 0; y < levelLayout[0].length; y++) {
 				layoutUnparsed = splitInput[y].split(", *");
 				for (int x = 0; x < levelLayout.length; x++)
 				{
-					levelLayout[x][y] = Integer.parseInt(layoutUnparsed[x]);
+					levelLayout[x][y] = Integer.parseInt(layoutUnparsed[x].trim());
 				}
 			}
 		}
@@ -87,7 +87,7 @@ public class Assets
 		
 		try
 		{
-			BufferedReader reader = new BufferedReader(new InputStreamReader(Assets.class.getResourceAsStream("ca/josephroque/ld30/_resources/text/level" + id + "_entity.txt")));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Assets.class.getResourceAsStream("/ca/josephroque/ld30/_resources/text/level" + id + "_entity.txt")));
 			String line = reader.readLine();
 			String input = "";
 			while (line != null)
@@ -105,7 +105,7 @@ public class Assets
 				{
 				case "PLAYER":
 					game.getPlayer(true).setPosition(Integer.parseInt(stats[0]), Integer.parseInt(stats[1]));
-					game.getPlayer(false).setPosition(mapHeight / 2 + (mapHeight / 2 - game.getPlayer(true).getY() - game.getPlayer(true).getHeight()), Integer.parseInt(stats[1]));
+					game.getPlayer(false).setPosition(Integer.parseInt(stats[0]), mapHeight / 2 + (mapHeight / 2 - game.getPlayer(true).getY() - game.getPlayer(true).getHeight()));
 					break;
 				case "GUARD_OVER":
 					entities.add(new Guard(Integer.parseInt(stats[0]), Integer.parseInt(stats[1]), Integer.parseInt(stats[2]), Integer.parseInt(stats[3]), true));

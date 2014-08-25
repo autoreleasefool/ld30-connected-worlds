@@ -25,8 +25,10 @@ public class Crate extends Entity
 			pushTimer = 0;
 		}
 		
-		if (!gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y + height) / Constants.TILE_SIZE + 1)
+		if ((overOrUnder && !gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, (y + height) / Constants.TILE_SIZE + 1)
 				&& !gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, (y + height) / Constants.TILE_SIZE + 1))
+				|| (!overOrUnder && !gameInstance.getLevel().isBlockSolid(x / Constants.TILE_SIZE, y / Constants.TILE_SIZE - 1)
+						&& !gameInstance.getLevel().isBlockSolid((x + width) / Constants.TILE_SIZE, y / Constants.TILE_SIZE - 1)))
 		{
 			dy += (dy < Constants.TERMINAL_VELOCITY) ? Constants.GRAVITY:0;
 		}
@@ -40,11 +42,14 @@ public class Crate extends Entity
 		{
 			dx = (dy != 0) ? -dx:0;
 		}
+		
+		x += dx;
+		y += (overOrUnder) ? dy:-dy;
 	}
 	
 	public void render(Graphics2D g2d, float interpolation)
 	{
-		g2d.drawImage(Assets.terrain.getSubimage(32, (overOrUnder) ? 0:256, width, height), x, y, null);
+		g2d.drawImage(Assets.terrain.getSubimage(32, (overOrUnder) ? 0:256, width, height), x - Player.getXOffset(), y - Player.getYOffset(), null);
 	}
 
 	public Crate(int x, int y, boolean overOrUnder)

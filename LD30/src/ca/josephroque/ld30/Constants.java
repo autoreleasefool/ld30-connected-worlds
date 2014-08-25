@@ -15,5 +15,5 @@ public interface Constants
 	public static final boolean shouldPrintToConsole = true;
 	
 	public static final int GRAVITY = 1;
-	public static final int TERMINAL_VELOCITY = 10;
+	public static final int TERMINAL_VELOCITY = 4;
 }

@@ -20,14 +20,10 @@ public class Guard extends Entity
 		
 		if (dx == 0)
 		{
-			if (switchTimer == 0)
+			if (--switchTimer == 0)
 			{
 				dx = SPEED * (x == leftLimit ? 1:-1);
 				direction = (dx < 0) ? 1:0;
-			}
-			else
-			{
-				switchTimer--;
 			}
 		}
 		else if (dx < 0)
@@ -54,7 +50,7 @@ public class Guard extends Entity
 	
 	public void render(Graphics2D g2d, float interpolation)
 	{
-		g2d.drawImage(Assets.terrain.getSubimage(294 + direction * width, 239 + (overOrUnder ? 0:256), width, height), x, y + ((frame < 20) ? 0:2), null);
+		g2d.drawImage(Assets.terrain.getSubimage(294 + direction * width, 239 + (overOrUnder ? 0:256), width, height), x - Player.getXOffset(), y - Player.getYOffset() + ((frame < 20) ? 0:2), null);
 	}
 
 	public Guard(int x, int y, int leftLimit, int rightLimit, boolean overOrUnder)

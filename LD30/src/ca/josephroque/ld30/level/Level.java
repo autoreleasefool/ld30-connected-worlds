@@ -1,5 +1,6 @@
 package ca.josephroque.ld30.level;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -14,15 +15,18 @@ import ca.josephroque.ld30.Constants;
 import ca.josephroque.ld30.Game;
 import ca.josephroque.ld30.entity.Crate;
 import ca.josephroque.ld30.entity.Entity;
+import ca.josephroque.ld30.entity.Player;
 
 public class Level
 {
 	
 	private Game game = null;
 	private ArrayList<Entity> entities = null;
-	private BufferedImage map = null;
-	private int[][] layout = null;
 	
+	private BufferedImage imgLevel = null;
+	private BufferedImage imgEntities = null;
+	
+	private int[][] layout = null;
 	private int id;
 	
 	public void update()
@@ -54,18 +58,28 @@ public class Level
 			return;
 		}
 		
+		g2d.drawImage(imgLevel.getSubimage(Player.getXOffset(), Player.getYOffset(), Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT), 0, 0, null);
+		Graphics2D g = imgEntities.createGraphics();
+		g.setBackground(new Color(0, 0, 0, 0));
+		g.clearRect(0, 0, imgEntities.getWidth(), imgEntities.getHeight());
 		for (int i = 0; i<entities.size(); i++)
 		{
-			if (!entities.get(i).isDead())
+			if (!entities.get(i).isDead() && (entities.get(i).getX() < Player.getXOffset() + Constants.SCREEN_WIDTH
+												&& entities.get(i).getX() + entities.get(i).getWidth() > Player.getXOffset()
+												&& entities.get(i).getY() < Player.getYOffset() + Constants.SCREEN_HEIGHT
+												&& entities.get(i).getY() + entities.get(i).getHeight() > Player.getYOffset()))
 			{
-				entities.get(i).render(g2d, interpolation);
+				entities.get(i).render(g, interpolation);
 			}
 		}
+		g.dispose();
+		g2d.drawImage(imgEntities, 0, 0, null);
 	}
 	
 	private void generateEntities()
 	{
-		entities = Assets.loadEntities(game, id, map.getHeight());
+		
+		entities = Assets.loadEntities(game, id, imgLevel.getHeight());
 		for (int x = 0; x < layout.length; x++)
 		{
 			for (int y = 0; y < layout[x].length; y++)
@@ -95,19 +109,21 @@ public class Level
 		this.game = game;
 		this.id = id;
 		this.layout = Assets.loadLevelLayout(id);
-		map = generateMap(layout);
+		
+		GraphicsConfiguration graphicsConfig = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+		imgLevel = graphicsConfig.createCompatibleImage(layout.length * Constants.TILE_SIZE, layout[0].length * Constants.TILE_SIZE, Transparency.OPAQUE);
+		generateMap(imgLevel, layout);
+		imgEntities = graphicsConfig.createCompatibleImage(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT, Transparency.TRANSLUCENT);
 	}
 	
-	private BufferedImage generateMap(int[][] layout)
+	private void generateMap(BufferedImage image, int[][] layout)
 	{
-		GraphicsConfiguration graphicsConfig = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-		BufferedImage image = graphicsConfig.createCompatibleImage(layout.length * Constants.TILE_SIZE, layout[0].length * Constants.TILE_SIZE, Transparency.OPAQUE);
 		Graphics g = image.getGraphics();
 		
 		int xx, yy;
 		for (int x = 0; x < layout.length; x++)
 		{
-			for (int y = 0; y < layout.length; y++)
+			for (int y = 0; y < layout[x].length; y++)
 			{
 				switch(layout[x][y])
 				{
@@ -120,12 +136,14 @@ public class Level
 				default: 
 					xx = layout[x][y] % 16;
 					yy = layout[x][y] / 16;
-					g.drawImage(Assets.terrain.getSubimage(xx, yy, Constants.TILE_SIZE, Constants.TILE_SIZE), x * Constants.TILE_SIZE, y * Constants.TILE_SIZE, null);
+					g.drawImage(Assets.terrain.getSubimage(xx * Constants.TILE_SIZE, yy * Constants.TILE_SIZE, Constants.TILE_SIZE, Constants.TILE_SIZE), x * Constants.TILE_SIZE, y * Constants.TILE_SIZE, null);
 					break;
 				}
 			}
 		}
 		g.dispose();
-		return image;
 	}
+	
+	public int getWidth() {return imgLevel.getWidth();}
+	public int getHeight() {return imgLevel.getHeight();}
 }
