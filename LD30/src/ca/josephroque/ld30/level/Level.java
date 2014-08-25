@@ -15,6 +15,8 @@ import ca.josephroque.ld30.Constants;
 import ca.josephroque.ld30.Game;
 import ca.josephroque.ld30.entity.Crate;
 import ca.josephroque.ld30.entity.Entity;
+import ca.josephroque.ld30.entity.Explodable;
+import ca.josephroque.ld30.entity.Particle;
 import ca.josephroque.ld30.entity.Player;
 
 public class Level
@@ -22,6 +24,7 @@ public class Level
 	
 	private Game game = null;
 	private ArrayList<Entity> entities = null;
+	private ArrayList<Particle> particles = null;
 	
 	private BufferedImage imgLevel = null;
 	private BufferedImage imgEntities = null;
@@ -42,11 +45,30 @@ public class Level
 			e = it.next();
 			if (e.isDead())
 			{
+				if (e instanceof Explodable) 
+				{
+					Explodable ex = (Explodable) e;
+					ex.generateParticles(particles);
+				}
 				it.remove();
 			}
 			else
 			{
 				e.update();
+			}
+		}
+		
+		Particle p;
+		for (Iterator<Particle> it = particles.iterator(); it.hasNext(); )
+		{
+			p = it.next();
+			if (p.isDead())
+			{
+				it.remove();
+			}
+			else
+			{
+				p.update();
 			}
 		}
 	}
@@ -72,13 +94,18 @@ public class Level
 				entities.get(i).render(g, interpolation);
 			}
 		}
+		
+		for (int i = 0; i<particles.size(); i++)
+		{
+			particles.get(i).render(g, interpolation);
+		}
+		
 		g.dispose();
 		g2d.drawImage(imgEntities, 0, 0, null);
 	}
 	
 	private void generateEntities()
 	{
-		
 		entities = Assets.loadEntities(game, id, imgLevel.getHeight());
 		for (int x = 0; x < layout.length; x++)
 		{
@@ -136,6 +163,7 @@ public class Level
 		this.game = game;
 		this.id = id;
 		this.layout = Assets.loadLevelLayout(id);
+		particles = new ArrayList<Particle>();
 		
 		GraphicsConfiguration graphicsConfig = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 		imgLevel = graphicsConfig.createCompatibleImage(layout.length * Constants.TILE_SIZE, layout[0].length * Constants.TILE_SIZE, Transparency.OPAQUE);

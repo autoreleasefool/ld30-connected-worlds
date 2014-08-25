@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import ca.josephroque.ld30.entity.Door;
 import ca.josephroque.ld30.entity.Entity;
 import ca.josephroque.ld30.entity.Guard;
 
@@ -112,6 +113,12 @@ public class Assets
 					break;
 				case "GUARD_UNDER":
 					entities.add(new Guard(Integer.parseInt(stats[0]), Integer.parseInt(stats[1]), Integer.parseInt(stats[2]), Integer.parseInt(stats[3]), false));
+					break;
+				case "DOOR_OVER":
+					entities.add(new Door(Integer.parseInt(stats[0]), Integer.parseInt(stats[1]), true, Boolean.parseBoolean(stats[2])));
+					break;
+				case "DOOR_UNDER":
+					entities.add(new Door(Integer.parseInt(stats[0]), Integer.parseInt(stats[1]), false, Boolean.parseBoolean(stats[2])));
 					break;
 				}
 			}
