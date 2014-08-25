@@ -10,5 +10,10 @@ public interface Constants
 	public static final int SKIP_TICKS = 1000000000 / TICKS_PER_SECOND;
 	public static final int MAX_FRAMESKIPS = 5;
 	
+	public static final int TILE_SIZE = 32;
+	
 	public static final boolean shouldPrintToConsole = true;
+	
+	public static final int GRAVITY = 1;
+	public static final int TERMINAL_VELOCITY = 10;
 }

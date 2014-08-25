@@ -9,8 +9,12 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+
+import ca.josephroque.ld30.entity.Entity;
+import ca.josephroque.ld30.entity.Guard;
 
 public class Assets
 {
@@ -40,12 +44,13 @@ public class Assets
 		return buffImage;
 	}
 	
-	public static byte[][] loadLevelLayout(int id)
+	public static int[][] loadLevelLayout(int id)
 	{
-		byte[][] levelLayout = null;
+		int[][] levelLayout = null;
 		
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(Assets.class.getResourceAsStream("ca/josephroque/ld30/_resources/text/level" + id + ".txt")));
+		try
+		{
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Assets.class.getResourceAsStream("ca/josephroque/ld30/_resources/text/level" + id + "_terrain.txt")));
 			String line = reader.readLine();
 			String layout = "";
 			while (line != null)
@@ -55,12 +60,13 @@ public class Assets
 			}
 			
 			String[] splitInput = layout.split("\n");
-			levelLayout = new byte[splitInput[0].length()][splitInput.length];
-			for (int x = 0; x < levelLayout.length; x++)
-			{
-				for (int y = 0; y < levelLayout[x].length; y++)
+			String[] layoutUnparsed;
+			levelLayout = new int[splitInput[0].length()][splitInput.length];
+			for (int y = 0; y < splitInput.length; y++) {
+				layoutUnparsed = splitInput[y].split(", *");
+				for (int x = 0; x < levelLayout.length; x++)
 				{
-					levelLayout[x][y] = Byte.parseByte(splitInput[x].substring(y, y + 1));
+					levelLayout[x][y] = Integer.parseInt(layoutUnparsed[x]);
 				}
 			}
 		}
@@ -73,5 +79,50 @@ public class Assets
 		}
 		
 		return levelLayout;
+	}
+	
+	public static ArrayList<Entity> loadEntities(Game game, int id, int mapHeight)
+	{
+		ArrayList<Entity> entities = new ArrayList<Entity>();
+		
+		try
+		{
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Assets.class.getResourceAsStream("ca/josephroque/ld30/_resources/text/level" + id + "_entity.txt")));
+			String line = reader.readLine();
+			String input = "";
+			while (line != null)
+			{
+				input += line + "\n";
+				line = reader.readLine();
+			}
+			
+			String[] entityList = input.split("\n");
+			for (int i = 0; i < entityList.length; i++)
+			{
+				String entityName = entityList[i].substring(0, entityList[i].indexOf(":"));
+				String[] stats = entityList[i].substring(entityList[i].indexOf(":") + 1).split(",");
+				switch(entityName)
+				{
+				case "PLAYER":
+					game.getPlayer(true).setPosition(Integer.parseInt(stats[0]), Integer.parseInt(stats[1]));
+					game.getPlayer(false).setPosition(mapHeight / 2 + (mapHeight / 2 - game.getPlayer(true).getY() - game.getPlayer(true).getHeight()), Integer.parseInt(stats[1]));
+					break;
+				case "GUARD_OVER":
+					entities.add(new Guard(Integer.parseInt(stats[0]), Integer.parseInt(stats[1]), Integer.parseInt(stats[2]), Integer.parseInt(stats[3]), true));
+					break;
+				case "GUARD_UNDER":
+					entities.add(new Guard(Integer.parseInt(stats[0]), Integer.parseInt(stats[1]), Integer.parseInt(stats[2]), Integer.parseInt(stats[3]), false));
+					break;
+				}
+			}
+		} catch (IOException io)
+		{
+			if (Constants.shouldPrintToConsole)
+			{
+				io.printStackTrace();
+			}
+		}
+		
+		return entities;
 	}
 }

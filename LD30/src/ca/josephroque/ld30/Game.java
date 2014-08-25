@@ -2,6 +2,7 @@ package ca.josephroque.ld30;
 
 import java.awt.Graphics2D;
 
+import ca.josephroque.ld30.entity.Entity;
 import ca.josephroque.ld30.entity.Player;
 import ca.josephroque.ld30.level.Level;
 
@@ -11,8 +12,16 @@ public class Game
 	private Player underPlayer = null;
 	private Level level = null;
 	
+	private boolean firstIteration = true;
+	
 	public void update(Input input)
 	{
+		if (firstIteration)
+		{
+			Entity.setGame(this);
+			firstIteration = false;
+		}
+		
 		level.update();
 		overPlayer.update(input);
 		underPlayer.update(input);
@@ -27,15 +36,11 @@ public class Game
 
 	public Game()
 	{
-		overPlayer = new Player(this, 0, 0, true);
-		underPlayer = new Player(this, 0, 0, false);
+		overPlayer = new Player(0, 0, true);
+		underPlayer = new Player(0, 0, false);
 		level = new Level(this, 1);
-		overPlayer.setCurrentLevel(level);
-		underPlayer.setCurrentLevel(level);
 	}
 	
-	public Player getPlayer(boolean over)
-	{
-		return (over) ? overPlayer:underPlayer;
-	}
+	public Player getPlayer(boolean over) {return (over) ? overPlayer:underPlayer;}
+	public Level getLevel() {return level;}
 }
