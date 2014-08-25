@@ -128,10 +128,20 @@ public class Level
 				switch(layout[x][y])
 				{
 				case 1:
-					g.drawImage(Assets.terrain.getSubimage(0, 0, Constants.TILE_SIZE, Constants.TILE_SIZE), x * Constants.TILE_SIZE, y * Constants.TILE_SIZE, null);
-					break;
 				case 129:
-					g.drawImage(Assets.terrain.getSubimage(0, 256, Constants.TILE_SIZE, Constants.TILE_SIZE), x * Constants.TILE_SIZE, y * Constants.TILE_SIZE, null);
+					g.drawImage(Assets.terrain.getSubimage(0, (layout[x][y] == 1) ? 0:256, Constants.TILE_SIZE, Constants.TILE_SIZE), x * Constants.TILE_SIZE, y * Constants.TILE_SIZE, null);
+					break;
+				case 2:
+				case 130:
+					g.drawImage(Assets.terrain.getSubimage(64, (layout[x][y] == 2) ? 0:256, Constants.TILE_SIZE, Constants.TILE_SIZE), x * Constants.TILE_SIZE, y * Constants.TILE_SIZE, null);
+					if (x == 0 || (x > 0 && (layout[x - 1][y] != 2 && layout[x - 1][y] != 130)))
+						g.drawImage(Assets.terrain.getSubimage(96, (layout[x][y] == 2) ? 0:256, 3, Constants.TILE_SIZE), x * Constants.TILE_SIZE, y * Constants.TILE_SIZE, null);
+					if (x == layout.length - 1 || (x < layout.length - 1 && (layout[x + 1][y] != 2 && layout[x + 1][y] != 130)))
+						g.drawImage(Assets.terrain.getSubimage(96, (layout[x][y] == 2) ? 0:256, 3, Constants.TILE_SIZE), x * Constants.TILE_SIZE + 29, y * Constants.TILE_SIZE, null);
+					if (y == 0 || (y > 0 && (layout[x][y - 1] != 2 && layout[x][y - 1] != 130)))
+						g.drawImage(Assets.terrain.getSubimage(96, (layout[x][y] == 2) ? 0:256, Constants.TILE_SIZE, 3), x * Constants.TILE_SIZE, y * Constants.TILE_SIZE, null);
+					if (y == layout[x].length - 1 || (y < layout[x].length && (layout[x][y + 1] != 2 && layout[x][y + 1] != 130)))
+						g.drawImage(Assets.terrain.getSubimage(96, (layout[x][y] == 2) ? 0:256, Constants.TILE_SIZE, 3), x * Constants.TILE_SIZE, y * Constants.TILE_SIZE + 29, null);
 					break;
 				default: 
 					xx = layout[x][y] % 16;

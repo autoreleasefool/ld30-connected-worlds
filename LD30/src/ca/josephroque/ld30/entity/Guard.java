@@ -9,7 +9,7 @@ public class Guard extends Entity
 	private int leftLimit, rightLimit;
 	private int switchTimer = 0;
 	
-	private static final int SPEED = 5;
+	private static final int SPEED = 1;
 	
 	public void update()
 	{
@@ -37,7 +37,7 @@ public class Guard extends Entity
 		}
 		else
 		{
-			x = (x + dx + width > rightLimit ? rightLimit:x + dx);
+			x = (x + dx + width > rightLimit ? rightLimit - width:x + dx);
 			if (x + width == rightLimit)
 			{
 				dx = 0;
