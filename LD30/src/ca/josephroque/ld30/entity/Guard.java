@@ -50,7 +50,7 @@ public class Guard extends Entity
 	
 	public void render(Graphics2D g2d, float interpolation)
 	{
-		g2d.drawImage(Assets.terrain.getSubimage(294 + direction * width, 239 + (overOrUnder ? 0:256), width, height), x - Player.getXOffset(), y - Player.getYOffset() + ((frame < 20) ? 0:2), null);
+		//g2d.drawImage(Assets.terrain.getSubimage(294 + direction * width, 239 + (overOrUnder ? 0:256), width, height), x - Player.getXOffset(), y - Player.getYOffset() + ((frame < 20) ? 0:2), null);
 	}
 
 	public Guard(int x, int y, int leftLimit, int rightLimit, boolean overOrUnder)
