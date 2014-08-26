@@ -2,8 +2,6 @@ package ca.josephroque.ld30.entity;
 
 import java.awt.Graphics2D;
 
-import ca.josephroque.ld30.Assets;
-
 public class Guard extends Entity
 {
 	private int leftLimit, rightLimit;

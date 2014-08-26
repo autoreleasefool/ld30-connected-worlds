@@ -12,7 +12,7 @@ public class Particle
 	
 	private int x, y;
 	private int dx, dy;
-	private Color color;
+	//private Color color;
 	private int decayTime;
 	private boolean dead = false;
 	private boolean overOrUnder;
@@ -66,7 +66,7 @@ public class Particle
 		
 		this.x = x;
 		this.y = y;
-		this.color = color;
+		//this.color = color;
 		this.overOrUnder = overOrUnder;
 		decayTime = (int)(Math.random() * 30 + 10);
 		dx = (int)((Math.random() * 3 + 1) * (Math.random() < 0.5 ? -1:1));
