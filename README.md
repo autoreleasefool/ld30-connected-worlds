@@ -7,15 +7,10 @@ This project is no longer in development, and as a result, the code and resource
 
 ## Screenshots
 
-#### In-Game
-
 ![Screenshot 1](Screenshots/screen_ld30_final.png)
-
-#### Planning
-
-![Development Image 1](Screenshots/screen_character_designs.jpg)
-![Development Image 2](Screenshots/screen_level_design.jpg)
-![Development Image 3](Screenshots/screen_planning.jpg)
+![Development Image 1](Screenshots/screen_planning.jpg)
+![Development Image 2](Screenshots/screen_character_designs.jpg)
+![Development Image 3](Screenshots/screen_level_design.jpg)
 
 ## Licensing
 
