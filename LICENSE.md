@@ -1,25 +1,4 @@
-# LD30 - Connected Worlds
-
-Ludum Dare 30 - Theme: Connected Worlds <br />
-Created in 48 hours from August 22nd - August 24th, 2014
-
-This project is no longer in development, and as a result, the code and resources have been released under certain Open Source or Creative Commons licenses.
-
-## Screenshots
-
-#### In-Game
-
-![Screenshot 1](Screenshots/screen_ld30_final.png)
-
-#### Planning
-
-![Development Image 1](Screenshots/screen_character_designs.jpg)
-![Development Image 2](Screenshots/screen_level_design.jpg)
-![Development Image 3](Screenshots/screen_planning.jpg)
-
-## Licensing
-
-#### Code License
+## Code License
 
 ```
 The MIT License (MIT)
@@ -45,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-#### Asset License
+## Asset License
 
 ```
 All graphics and sounds used within "LD30 - Connected Worlds" are licensed CC0
